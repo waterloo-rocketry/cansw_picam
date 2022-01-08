@@ -1,6 +1,7 @@
 #include <xc.h>
 
 void LED_init(void) {
+    // XXX Adjust these defines according to the picam schematic
     TRISC2 = 0;     // set C2 output
     LATC2 = 1;      // turn the led off
     

@@ -7,8 +7,8 @@
 
 void valve_init(void);
 
-void vent_open(void);
-void vent_close(void);
+void vent_open(void); // Turn on Raspberry Pi
+void vent_close(void); // Turn off Raspberry Pi
 
 void vent_send_status(enum VALVE_STATE req_state);
 

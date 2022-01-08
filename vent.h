@@ -5,6 +5,7 @@
 
 #define MAX_LOOP_TIME_DIFF_ms 250
 
+// XXX Adjust these defines according to the picam schematic
 #define RED_LED_ON() (LATC4 = 0)
 #define RED_LED_OFF() (LATC4 = 1)
 #define WHITE_LED_ON() (LATC3 = 0)

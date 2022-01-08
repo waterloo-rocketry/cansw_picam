@@ -15,24 +15,18 @@
 #include "timer.h"
 
 void valve_init(void){
-    TRISB5 = 0; // set VALVE_CONTROL (pin 26) as output
-    LATB5 = 0; // this opens the valve, which is what we want on startup
-
-    TRISB4 = 1; // set LIMIT_OPEN (pin 25) as input
-    ANSELB4 = 0; // set as digital input
-
-    TRISB3 = 1; // set LIMIT_CLOSED (pin 24) as input
-    ANSELB3 = 0; // set as digital input
+    TRISC4 = 0; // set VALVE_CONTROL (pin 26) as output
+    LATC4 = 1; // this opens the valve, which is what we want on startup
 }
 
 void vent_open(void){
     WHITE_LED_ON();
-    LATB5 = 0;
+    LATC4 = 1;
 }
 
 void vent_close(void){
     WHITE_LED_OFF();
-    LATB5 = 1;
+    LATC4 = 0;
 }
 
 bool get_valve_open_state(void){
