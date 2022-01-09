@@ -5,13 +5,12 @@
 
 #define MAX_LOOP_TIME_DIFF_ms 250
 
-// XXX Adjust these defines according to the picam schematic
-#define RED_LED_ON() (LATC4 = 0)
-#define RED_LED_OFF() (LATC4 = 1)
-#define WHITE_LED_ON() (LATC3 = 0)
-#define WHITE_LED_OFF() (LATC3 = 1)
-#define BLUE_LED_ON() (LATC2 = 0)
-#define BLUE_LED_OFF() (LATC2 = 1)
+#define WHITE_LED_ON()  (LATB4 = 1)
+#define WHITE_LED_OFF() (LATB4 = 0)
+#define BLUE_LED_ON()   (LATC3 = 1)
+#define BLUE_LED_OFF()  (LATC3 = 0)
+#define PI_ZERO_ON()    (LATC4 = 1)
+#define PI_ZERO_OFF()   (LATC4 = 0)
 
 void LED_init(void);
 

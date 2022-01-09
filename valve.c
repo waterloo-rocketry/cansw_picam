@@ -15,18 +15,15 @@
 #include "timer.h"
 
 void valve_init(void){
-    TRISC4 = 0; // set VALVE_CONTROL (pin 26) as output
-    LATC4 = 1; // this opens the valve, which is what we want on startup
+    WHITE_LED_OFF();
 }
 
 void vent_open(void){
-    WHITE_LED_ON();
-    LATC4 = 1;
+    WHITE_LED_OFF();
 }
 
 void vent_close(void){
-    WHITE_LED_OFF();
-    LATC4 = 0;
+    WHITE_LED_ON();
 }
 
 bool get_valve_open_state(void){

@@ -48,13 +48,13 @@ int main(int argc, char** argv) {
     INTCON0bits.GIE = 1;
 
     // Set up CAN TX
-    TRISC1 = 0;
-    RC1PPS = 0x33;
+    TRISC0 = 0;
+    RC0PPS = 0x33;
 
     // Set up CAN RX
-    TRISC0 = 1;
-    ANSELC0 = 0;
-    CANRXPPS = 0x10;
+    TRISC1 = 1;
+    ANSELC1 = 0;
+    CANRXPPS = 0x11;
 
     // set up CAN module
     can_timing_t can_setup;
@@ -158,13 +158,11 @@ static void can_msg_handler(const can_msg_t *msg) {
             break;
 
         case MSG_LEDS_ON:
-            RED_LED_ON();
             BLUE_LED_ON();
             WHITE_LED_ON();
             break;
 
         case MSG_LEDS_OFF:
-            RED_LED_OFF();
             BLUE_LED_OFF();
             WHITE_LED_OFF();
             break;

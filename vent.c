@@ -1,13 +1,16 @@
 #include <xc.h>
 
 void LED_init(void) {
-    // XXX Adjust these defines according to the picam schematic
-    TRISC2 = 0;     // set C2 output
-    LATC2 = 1;      // turn the led off
     
-    TRISC3 = 0;     // set C3 output
-    LATC3 = 1;      // turn the led off
+    // Pi Zero
+    TRISC4 = 0;     
+    LATC4 = 0;      
     
-    TRISC4 = 0;     // set C4 output
-    LATC4 = 1;      // turn the led off
+    // BLUE LED
+    TRISC3 = 0;     
+    LATC3 = 0;      
+    
+    // WHITE LED
+    TRISB4 = 0;     
+    LATB4 = 0;      
 }
