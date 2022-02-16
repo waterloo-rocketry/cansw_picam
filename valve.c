@@ -15,23 +15,23 @@
 #include "timer.h"
 
 void valve_init(void){
-    WHITE_LED_OFF();
+    PI_ZERO_OFF();
 }
 
 void vent_open(void){
-    WHITE_LED_OFF();
+    PI_ZERO_OFF();
 }
 
 void vent_close(void){
-    WHITE_LED_ON();
+    PI_ZERO_ON();
 }
 
 bool get_valve_open_state(void){
-    return PORTBbits.RB4;
+    return PORTCbits.RC4;
 }
 
 bool get_valve_closed_state(void){
-    return PORTBbits.RB3;
+    return PORTCbits.RC4;
 }
 
 void vent_send_status(enum VALVE_STATE req_state) {
