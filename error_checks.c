@@ -94,7 +94,7 @@ bool check_bus_current_error(void){
     return true;
 }
 
-bool check_valve_pin_error(enum VALVE_STATE req_state) {
+bool check_cam_pin_error(enum CAM_STATE req_state) {
     return true;
 
     // Error cases:

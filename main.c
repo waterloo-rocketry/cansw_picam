@@ -14,7 +14,7 @@
 
 #include "vent.h"
 #include "error_checks.h"
-#include "valve.h"
+#include "cam.h"
 #include "timer.h"
 
 #include <xc.h>
@@ -22,9 +22,9 @@
 static void can_msg_handler(const can_msg_t *msg);
 static void send_status_ok(void);
 
-// Follows VALVE_STATE in message_types.h
+// Follows CAM_STATE in message_types.h
 // SHOULD ONLY BE MODIFIED IN ISR
-static enum VALVE_STATE requested_valve_state = VALVE_OPEN;
+static enum CAM_STATE requested_cam_state = CAM_ON;
 static uint32_t last_can_traffic_timestamp_ms = 0;
 
 //memory pool for the CAN tx buffer
@@ -66,10 +66,10 @@ int main(int argc, char** argv) {
     // loop timer
     uint32_t last_millis = millis();
 
-    // Set up valve
-    valve_init();
+    // Set up camera 
+    cam_init();
 
-    vent_open();
+    //cam_on();
 
     bool blue_led_on = false;   // visual heartbeat
     while (1) {
@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
             bool status_ok = true;
             status_ok &= check_battery_voltage_error();
             status_ok &= check_bus_current_error();
-            status_ok &= check_valve_pin_error(requested_valve_state);
+            status_ok &= check_valve_pin_error(requested_cam_state);
 
             // if there was an issue, a message would already have been sent out
             if (status_ok) { send_status_ok(); }
@@ -144,17 +144,25 @@ static void can_msg_handler(const can_msg_t *msg) {
     }
 
     switch (msg_type) {
-        case MSG_GENERAL_CMD:
-            cmd_type = get_general_cmd_type(msg);
-            if (cmd_type == BUS_DOWN_WARNING) {
-                requested_valve_state = VALVE_OPEN;
-            }
+        // case MSG_GENERAL_CMD:
+        //     cmd_type = get_general_cmd_type(msg);
+        //     if (cmd_type == BUS_DOWN_WARNING) {
+        //         requested_valve_state = VALVE_OPEN;
+        //     }
+        //     break;
+
+        // case MSG_VENT_VALVE_CMD:
+        //     // see message_types.h for message format
+        //     // vent position will be updated synchronously
+        //     requested_valve_state = get_req_valve_state(msg);
+        //     break;
+
+        case MSG_PICAM_ON:
+            cam_on();
             break;
 
-        case MSG_VENT_VALVE_CMD:
-            // see message_types.h for message format
-            // vent position will be updated synchronously
-            requested_valve_state = get_req_valve_state(msg);
+        case MSG_PICAM_OFF:
+            cam_off();
             break;
 
         case MSG_LEDS_ON:
