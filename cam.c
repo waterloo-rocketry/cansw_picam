@@ -11,8 +11,22 @@
 #include "mcc_generated_files/mcc.h"
 
 #include "cam.h"
-#include "vent.h"
 #include "timer.h"
+
+void LED_init(void) {
+    
+    // Pi Zero
+    TRISC4 = 0;     
+    LATC4 = 0;      
+    
+    // BLUE LED
+    TRISC3 = 0;     
+    LATC3 = 0;      
+    
+    // WHITE LED
+    TRISB4 = 0;     
+    LATB4 = 0;      
+}
 
 void cam_init(void){
     PI_ZERO_OFF(); // vent.h

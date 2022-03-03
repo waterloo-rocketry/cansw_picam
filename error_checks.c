@@ -9,9 +9,8 @@
 #include "mcc_generated_files/mcc.h"
 
 #include "timer.h"
-#include "vent.h"
 #include "error_checks.h"
-#include "valve.h"
+#include "cam.h"
 
 #include <stdlib.h>
 

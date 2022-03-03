@@ -12,7 +12,6 @@
 #include "mcc_generated_files/adcc.h"
 #include "mcc_generated_files/pin_manager.h"
 
-#include "vent.h"
 #include "error_checks.h"
 #include "cam.h"
 #include "timer.h"
@@ -76,21 +75,21 @@ int main(int argc, char** argv) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
 
             // check for general board status
-            bool status_ok = true;
-            status_ok &= check_battery_voltage_error();
-            status_ok &= check_bus_current_error();
-            status_ok &= check_valve_pin_error(requested_cam_state);
+            // bool status_ok = true;
+            // status_ok &= check_battery_voltage_error();
+            // status_ok &= check_bus_current_error();
+            // status_ok &= check_valve_pin_error(requested_cam_state);
 
             // if there was an issue, a message would already have been sent out
-            if (status_ok) { send_status_ok(); }
+            // if (status_ok) { send_status_ok(); }
 
             // check valves before we set them
-            vent_send_status(requested_valve_state);
+            // vent_send_status(requested_valve_state);
 
-            if (requested_valve_state == VALVE_OPEN) {
-                vent_open();
-            } else if (requested_valve_state == VALVE_CLOSED) {
-                vent_close();
+            if (requested_cam_state == CAM_ON) {
+                cam_on();
+            } else if (requested_cam_state == CAM_OFF) {
+                cam_off();
             } else {
                 // shouldn't get here - we messed up
                 can_msg_t error_msg;
@@ -157,11 +156,17 @@ static void can_msg_handler(const can_msg_t *msg) {
         //     requested_valve_state = get_req_valve_state(msg);
         //     break;
 
+        case MSG_CAM_STATUS:
+            cam_send_status(requested_cam_state);
+            break;
+
         case MSG_PICAM_ON:
+            requested_cam_state = CAM_ON;
             cam_on();
             break;
 
         case MSG_PICAM_OFF:
+            requested_cam_state = CAM_OFF;
             cam_off();
             break;
 
@@ -199,10 +204,10 @@ static void can_msg_handler(const can_msg_t *msg) {
 }
 
 // Send a CAN message with nominal status
-static void send_status_ok(void) {
-    can_msg_t board_stat_msg;
-    build_board_stat_msg(millis(), E_NOMINAL, NULL, 0, &board_stat_msg);
+// static void send_status_ok(void) {
+//     can_msg_t board_stat_msg;
+//     build_board_stat_msg(millis(), E_NOMINAL, NULL, 0, &board_stat_msg);
 
-    // send it off at low priority
-    txb_enqueue(&board_stat_msg);
-}
+//     // send it off at low priority
+//     txb_enqueue(&board_stat_msg);
+// }
