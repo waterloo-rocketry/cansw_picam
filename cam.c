@@ -29,7 +29,7 @@ void LED_init(void) {
 }
 
 void cam_init(void){
-    PI_ZERO_OFF(); // vent.h
+    PI_ZERO_OFF();
 }
 
 void cam_on(void){

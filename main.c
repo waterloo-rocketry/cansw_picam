@@ -75,16 +75,11 @@ int main(int argc, char** argv) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
 
             // check for general board status
-            // bool status_ok = true;
-            // status_ok &= check_battery_voltage_error();
-            // status_ok &= check_bus_current_error();
-            // status_ok &= check_valve_pin_error(requested_cam_state);
-
+            bool status_ok = true;
+            status_ok &= check_bus_current_error();
+  
             // if there was an issue, a message would already have been sent out
-            // if (status_ok) { send_status_ok(); }
-
-            // check valves before we set them
-            // vent_send_status(requested_valve_state);
+            if (status_ok) { send_status_ok(); }
 
             if (requested_cam_state == CAM_ON) {
                 cam_on();
@@ -143,18 +138,12 @@ static void can_msg_handler(const can_msg_t *msg) {
     }
 
     switch (msg_type) {
-        // case MSG_GENERAL_CMD:
-        //     cmd_type = get_general_cmd_type(msg);
-        //     if (cmd_type == BUS_DOWN_WARNING) {
-        //         requested_valve_state = VALVE_OPEN;
-        //     }
-        //     break;
-
-        // case MSG_VENT_VALVE_CMD:
-        //     // see message_types.h for message format
-        //     // vent position will be updated synchronously
-        //     requested_valve_state = get_req_valve_state(msg);
-        //     break;
+        case MSG_GENERAL_CMD:
+            cmd_type = get_general_cmd_type(msg);
+            if (cmd_type == BUS_DOWN_WARNING) {
+                requested_cam_state = CAM_OFF;
+            }
+            break;
 
         case MSG_CAM_STATUS:
             cam_send_status(requested_cam_state);
@@ -204,10 +193,10 @@ static void can_msg_handler(const can_msg_t *msg) {
 }
 
 // Send a CAN message with nominal status
-// static void send_status_ok(void) {
-//     can_msg_t board_stat_msg;
-//     build_board_stat_msg(millis(), E_NOMINAL, NULL, 0, &board_stat_msg);
+static void send_status_ok(void) {
+    can_msg_t board_stat_msg;
+    build_board_stat_msg(millis(), E_NOMINAL, NULL, 0, &board_stat_msg);
 
-//     // send it off at low priority
-//     txb_enqueue(&board_stat_msg);
-// }
+    // send it off at low priority
+    txb_enqueue(&board_stat_msg);
+}
