@@ -15,6 +15,7 @@
 #include "error_checks.h"
 #include "cam.h"
 #include "timer.h"
+#include "board.h"
 
 #include <xc.h>
 
@@ -68,8 +69,6 @@ int main(int argc, char** argv) {
     // Set up camera 
     cam_init();
 
-    //cam_on();
-
     bool blue_led_on = false;   // visual heartbeat
     while (1) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
@@ -80,6 +79,7 @@ int main(int argc, char** argv) {
   
             // if there was an issue, a message would already have been sent out
             if (status_ok) { send_status_ok(); }
+            cam_send_status(requested_cam_state);
 
             if (requested_cam_state == ACTUATOR_OPEN) {
                 cam_on();
@@ -103,11 +103,6 @@ int main(int argc, char** argv) {
 
             // update our loop counter
             last_millis = millis();
-
-            // Periodically send status every 500 ms
-            if((last_millis%500) == 0)
-                cam_send_status(requested_cam_state);
-
         }
         //send any queued CAN messages
         txb_heartbeat();
@@ -132,7 +127,7 @@ static void interrupt interrupt_handler() {
 
 static void can_msg_handler(const can_msg_t *msg) {
     uint16_t msg_type = get_message_type(msg);
-    static enum ACTUATOR_ID actuator_id = PICAM;
+    static enum ACTUATOR_ID actuator_id = BOARD_ACTUATOR_ID;
 
     // declare this in advance cause we can't declare it inside the switch
     // and I don't want to replace this entire thing with an if else
@@ -152,19 +147,10 @@ static void can_msg_handler(const can_msg_t *msg) {
             }
             break;
 
-        //case MSG_ACTUATOR_STATUS:
-        //    cam_send_status(requested_cam_state);
-        //    break;
-
         case MSG_ACTUATOR_CMD:
             msg_actuator_id = get_actuator_id(msg);
-            if(msg_actuator_id == actuator_id){
+            if(msg_actuator_id == actuator_id)
                 requested_cam_state = get_req_actuator_state(msg);
-                if(requested_cam_state == ACTUATOR_OPEN)
-                    cam_on();
-                else if(requested_cam_state == ACTUATOR_CLOSED)
-                    cam_off();
-            }
             break;
 
         case MSG_LEDS_ON:

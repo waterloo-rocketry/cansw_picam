@@ -9,5 +9,4 @@ Runs on the Rocket PI PCB (PICAM). To load code onto the board:
 * Power the board through the 5V bus input. The power from the PICKIT is not sufficient to power the entire board.
 * Load the code onto the board using MPLAB.
 
-When updating code, add Jack Christensen (aka BluCodeGH), Zachary Teper, Cooper Brunke
 

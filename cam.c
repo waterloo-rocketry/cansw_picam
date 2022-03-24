@@ -12,6 +12,7 @@
 
 #include "cam.h"
 #include "timer.h"
+#include "board.h"
 
 void LED_init(void) {
     
@@ -48,8 +49,8 @@ bool get_cam_state(void){
 void cam_send_status(enum ACTUATOR_STATE req_state) {
     // This is the same as the injector valve status.
     enum ACTUATOR_STATE curr_state;
-    enum ACTUATOR_ID actuator_id = PICAM;
-    curr_state = get_cam_state();
+    enum ACTUATOR_ID actuator_id = BOARD_ACTUATOR_ID;
+    curr_state = get_cam_state() ? ACTUATOR_OPEN : ACTUATOR_CLOSED;
 
     can_msg_t stat_msg;
     build_actuator_stat_msg(millis(), actuator_id, curr_state, req_state, &stat_msg); // canlib-->can_common.h 
