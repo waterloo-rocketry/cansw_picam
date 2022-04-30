@@ -14,12 +14,7 @@
 #include "timer.h"
 #include "board.h"
 
-void LED_init(void) {
-    
-    // Pi Zero
-    TRISC4 = 0;     
-    LATC4 = 0;      
-    
+void LED_init(void) {      
     // BLUE LED
     TRISC3 = 0;     
     LATC3 = 0;      
@@ -31,6 +26,10 @@ void LED_init(void) {
 
 void cam_init(void){
     PI_ZERO_OFF();
+
+    // Pi Zero
+    TRISC4 = 0;     
+    LATC4 = 0;
 }
 
 void cam_on(void){
