@@ -132,7 +132,7 @@ static void can_msg_handler(const can_msg_t *msg) {
     // declare this in advance cause we can't declare it inside the switch
     // and I don't want to replace this entire thing with an if else
     int cmd_type = -1;
-    int msg_actuator_id = -1;
+    int dest_id = -1;
 
     // ignore messages that were sent from this board
     if (get_board_unique_id(msg) == BOARD_UNIQUE_ID) {
@@ -148,8 +148,8 @@ static void can_msg_handler(const can_msg_t *msg) {
             break;
 
         case MSG_ACTUATOR_CMD:
-            msg_actuator_id = get_actuator_id(msg);
-            if(msg_actuator_id == actuator_id)
+            dest_id = get_actuator_id(msg);
+            if(dest_id == actuator_id)
                 requested_cam_state = get_req_actuator_state(msg);
             break;
 
@@ -163,6 +163,12 @@ static void can_msg_handler(const can_msg_t *msg) {
             WHITE_LED_OFF();
             break;
 
+        case MSG_RESET_CMD:
+            dest_id = get_reset_board_id(msg);
+            if (dest_id == BOARD_UNIQUE_ID || dest_id == 0 ){
+                RESET();
+            }
+            break;
         // all the other ones - do nothing
         case MSG_DEBUG_MSG:
         case MSG_DEBUG_PRINTF:
