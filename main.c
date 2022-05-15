@@ -73,12 +73,11 @@ int main(int argc, char** argv) {
     while (1) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
 
-            // check for general board status
-            bool status_ok = true;
-            status_ok &= check_bus_current_error();
+            // Check the bus current and report it in a CAN message. Send
+            // a warning if the current is too high. 
+            check_bus_current_error();
   
             // if there was an issue, a message would already have been sent out
-            if (status_ok) { send_status_ok(); }
             cam_send_status(requested_cam_state);
 
             if (requested_cam_state == ACTUATOR_OPEN) {
