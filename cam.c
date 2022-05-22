@@ -24,25 +24,32 @@ void LED_init(void) {
     LATB4 = 0;      
 }
 
-void cam_init(void){
+void cam_init(void) {
     PI_ZERO_OFF();
+    PI_ZERO_UNSIGNAL_SHUTDOWN();
 
     // Pi Zero
     TRISC4 = 0;     
-    LATC4 = 0;
+    LATC4  = 0;
+    TRISC6 = 0;
+    LATC6  = 0;
+    TRISC7 = 1;
 }
 
-void cam_on(void){
+void cam_on(void) {
+    PI_ZERO_UNSIGNAL_SHUTDOWN();
     PI_ZERO_ON();
 }
 
 void cam_off(void){
-    PI_ZERO_OFF();
+    PI_ZERO_SIGNAL_SHUTDOWN();
+    // Wait until Pi is no longer running
+    if (!PORTCbits.RC7) { PI_ZERO_OFF(); }
 }
 
 bool get_cam_state(void){
-    // ACTUATOR_OPEN = 0, hence !
-    return !PORTCbits.RC4;
+    // ACTUATOR_OPEN = 0, hence !RC4
+    return !PORTCbits.RC4 && PORTCbits.RC7;
 }
 
 void cam_send_status(enum ACTUATOR_STATE req_state) {

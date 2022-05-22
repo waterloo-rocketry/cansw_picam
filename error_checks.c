@@ -33,11 +33,15 @@ bool check_bus_current_error(void){
         return false;
     }
     
-    // things look ok
-    can_msg_t current_draw_msg;
-    build_board_stat_msg(timestamp, E_NOMINAL, curr_data, 2, &current_draw_msg);
-    txb_enqueue(&current_draw_msg);
+    can_msg_t current_drawn_msg;
+    enum SENSOR_ID sensor_id;
+    if (BOARD_UNIQUE_ID == BOARD_ID_ROCKET_PI) 
+        { sensor_id = SENSOR_PICAM1_CURRENT; }
+    else if (BOARD_UNIQUE_ID == BOARD_ID_ROCKET_PI_2)
+        { sensor_id = SENSOR_PICAM2_CURRENT; }
     
+    build_analog_data_msg(timestamp, sensor_id, curr_data, &current_drawn_msg);
+    txb_enqueue(&current_drawn_msg);
     return true;
 }
 

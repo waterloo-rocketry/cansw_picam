@@ -70,12 +70,14 @@ int main(int argc, char** argv) {
     cam_init();
 
     bool blue_led_on = false;   // visual heartbeat
+    bool status_ok = false;
     while (1) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
 
             // Check the bus current and report it in a CAN message. Send
             // a warning if the current is too high. 
-            check_bus_current_error();
+            status_ok &= check_bus_current_error();
+            if (status_ok) { send_status_ok(); }
   
             // if there was an issue, a message would already have been sent out
             cam_send_status(requested_cam_state);
@@ -168,19 +170,9 @@ static void can_msg_handler(const can_msg_t *msg) {
                 RESET();
             }
             break;
+        
         // all the other ones - do nothing
-        case MSG_DEBUG_MSG:
-        case MSG_DEBUG_PRINTF:
-        case MSG_SENSOR_ACC:
-        case MSG_SENSOR_GYRO:
-        case MSG_SENSOR_MAG:
-        case MSG_SENSOR_ANALOG:
-        case MSG_GENERAL_BOARD_STATUS:
-            break;
-
-        // illegal message type - should never get here
         default:
-            // send a message or something
             break;
     }
 
