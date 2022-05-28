@@ -40,7 +40,8 @@ bool check_bus_current_error(void){
     else if (BOARD_UNIQUE_ID == BOARD_ID_ROCKET_PI_2)
         { sensor_id = SENSOR_PICAM2_CURRENT; }
     
-    build_analog_data_msg(timestamp, sensor_id, curr_data, &current_drawn_msg);
+    build_analog_data_msg(timestamp, sensor_id, (uint16_t) curr_draw_mA, 
+                            &current_drawn_msg);
     txb_enqueue(&current_drawn_msg);
     return true;
 }

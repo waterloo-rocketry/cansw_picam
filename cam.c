@@ -43,13 +43,13 @@ void cam_on(void) {
 
 void cam_off(void){
     PI_ZERO_SIGNAL_SHUTDOWN();
-    // Wait until Pi is no longer running
-    if (!PORTCbits.RC7) { PI_ZERO_OFF(); }
+    // Wait until picam is no longer running
+    if (PORTCbits.RC7) { PI_ZERO_OFF(); }
 }
 
-bool get_cam_state(void){
-    // ACTUATOR_OPEN = 0, hence !RC4
-    return !PORTCbits.RC4 && PORTCbits.RC7;
+bool get_cam_state(void) {
+    // RC7 is active low; LOW = picam is recording, HIGH = picam camera error
+    return PORTCbits.RC4 && !PORTCbits.RC7;
 }
 
 void cam_send_status(enum ACTUATOR_STATE req_state) {

@@ -70,12 +70,12 @@ int main(int argc, char** argv) {
     cam_init();
 
     bool blue_led_on = false;   // visual heartbeat
-    bool status_ok = false;
     while (1) {
         if (millis() - last_millis > MAX_LOOP_TIME_DIFF_ms) {
 
             // Check the bus current and report it in a CAN message. Send
             // a warning if the current is too high. 
+            bool status_ok = true;
             status_ok &= check_bus_current_error();
             if (status_ok) { send_status_ok(); }
   
