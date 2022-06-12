@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "canlib/message_types.h"
 
-#define MAX_LOOP_TIME_DIFF_ms 250
+#define MAX_LOOP_TIME_DIFF_ms 500
 
 #define WHITE_LED_ON()              (LATB4 = 1)
 #define WHITE_LED_OFF()             (LATB4 = 0)

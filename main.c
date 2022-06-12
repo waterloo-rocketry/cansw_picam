@@ -24,7 +24,7 @@ static void send_status_ok(void);
 
 // Follows ACTUATOR_STATE in message_types.h
 // SHOULD ONLY BE MODIFIED IN ISR
-static enum ACTUATOR_STATE requested_cam_state = ACTUATOR_CLOSED;
+static enum ACTUATOR_STATE requested_cam_state = ACTUATOR_OPEN;
 static uint32_t last_can_traffic_timestamp_ms = 0;
 
 //memory pool for the CAN tx buffer
@@ -82,9 +82,9 @@ int main(int argc, char** argv) {
             // if there was an issue, a message would already have been sent out
             cam_send_status(requested_cam_state);
 
-            if (requested_cam_state == ACTUATOR_OPEN) {
+            if (requested_cam_state == ACTUATOR_CLOSED) {
                 cam_on();
-            } else if (requested_cam_state == ACTUATOR_CLOSED) {
+            } else if (requested_cam_state == ACTUATOR_OPEN) {
                 cam_off();
             } else {
                 // shouldn't get here - we messed up
@@ -144,7 +144,7 @@ static void can_msg_handler(const can_msg_t *msg) {
         case MSG_GENERAL_CMD:
             cmd_type = get_general_cmd_type(msg);
             if (cmd_type == BUS_DOWN_WARNING) {
-                requested_cam_state = ACTUATOR_CLOSED;
+                requested_cam_state = ACTUATOR_OPEN;
             }
             break;
 
