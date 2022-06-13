@@ -21,20 +21,22 @@
 bool check_bus_current_error(void){
     adc_result_t sense_raw_mV = ADCC_GetSingleConversion(channel_VSENSE);
     int curr_draw_mA = (sense_raw_mV) / 20;
-
+    uint32_t timestamp = millis();
+    uint8_t curr_data[2] = {0};
+    curr_data[0] = (curr_draw_mA >> 8) & 0xff;
+    curr_data[1] = (curr_draw_mA >> 0) & 0xff;
+    
     if (curr_draw_mA > CAM_OVERCURRENT_THRESHOLD_mA) {
-        uint32_t timestamp = millis();
-        uint8_t curr_data[2] = {0};
-        curr_data[0] = (curr_draw_mA >> 8) & 0xff;
-        curr_data[1] = (curr_draw_mA >> 0) & 0xff;
-
         can_msg_t error_msg;
         build_board_stat_msg(timestamp, E_BUS_OVER_CURRENT, curr_data, 2, &error_msg);
         txb_enqueue(&error_msg);
         return false;
     }
-
-    // things look ok
+    
+    can_msg_t current_drawn_msg;
+    build_analog_data_msg(timestamp, SENSOR_PICAM_CURRENT, (uint16_t) curr_draw_mA, 
+                            &current_drawn_msg);
+    txb_enqueue(&current_drawn_msg);
     return true;
 }
 
